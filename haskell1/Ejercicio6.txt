@@ -1,0 +1,26 @@
+-- Función para calcular la media de una lista de números
+promedio :: (Fractional a) => [a] -> a
+promedio xs = sum xs / fromIntegral (length xs)
+
+-- Función para calcular la desviación estándar de una lista de números
+desviacionEstandar :: (Floating a) => [a] -> a
+desviacionEstandar xs =
+  let m = promedio xs
+      n = fromIntegral $ length xs
+      diferenciasAlCuadrado = map (\x -> (x - m) ^ 2) xs
+  in sqrt (sum diferenciasAlCuadrado / n)
+
+-- Función para determinar si un valor es atípico en función del promedio y la desviación estándar
+esAtipico :: (Floating a, Ord a) => [a] -> a -> Bool
+esAtipico muestra n =
+  let promedioMuestra = promedio muestra
+      desviacion = desviacionEstandar muestra
+      puntuacion = (n - promedioMuestra) / desviacion
+  in puntuacion < -3 || puntuacion > 3
+
+-- Función para filtrar los datos atípicos de una muestra
+datosAtipicos :: (Floating a, Ord a) => [a] -> [a]
+datosAtipicos muestra = filter (esAtipico muestra) muestra
+
+main :: IO ()
+main = print $ datosAtipicos [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
